@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>ROBOT AI TOOL</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI, sans-serif;
+}
+body{
+    height:100vh;
+    overflow:hidden;
+    background:radial-gradient(circle at top,#ffb7c533,#020617 70%);
+}
+canvas{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+}
+.container{
+    position:relative;
+    z-index:10;
+    width:100%;
+    height:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+.card{
+    width:360px;
+    padding:26px;
+    border-radius:20px;
+    background:rgba(15,20,40,.65);
+    backdrop-filter:blur(14px);
+    box-shadow:0 0 35px #ff9bbf55;
+    animation:fade .3s ease;
+}
+@keyframes fade{
+    from{opacity:0;transform:scale(.94)}
+    to{opacity:1;transform:scale(1)}
+}
+h2{
+    text-align:center;
+    color:#ffd1e6;
+    margin-bottom:16px;
+}
+.input{
+    width:100%;
+    padding:13px;
+    margin:9px 0;
+    border:none;
+    border-radius:12px;
+    outline:none;
+    background:rgba(255,255,255,.12);
+    color:#fff;
+}
+.input::placeholder{color:#ffd6e8}
+.btn{
+    width:100%;
+    padding:13px;
+    margin-top:12px;
+    border:none;
+    border-radius:14px;
+    background:#ff9bbf;
+    font-weight:bold;
+    cursor:pointer;
+}
+.switch{
+    text-align:center;
+    margin-top:12px;
+    font-size:13px;
+    color:#ffd6e8;
+    cursor:pointer;
+}
+.hidden{display:none}
+.toast{
+    position:fixed;
+    bottom:40px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#ff9bbf;
+    color:#240013;
+    padding:13px 24px;
+    border-radius:22px;
+    font-weight:bold;
+    opacity:0;
+    transition:.35s;
+    z-index:99;
+}
+.toast.show{opacity:1}
+</style>
+</head>
+
+<body>
+
+<canvas id="sakura"></canvas>
+
+<div class="container">
+
+    <!-- LOGIN -->
+    <div class="card" id="loginBox">
+        <h2>🤖 ROBOT AI LOGIN</h2>
+        <input class="input" id="loginUser" placeholder="Tên đăng nhập">
+        <input class="input" id="loginPass" type="password" placeholder="Mật khẩu">
+        <button class="btn" id="loginBtn">Đăng nhập</button>
+        <div class="switch" id="toRegister">Chưa có tài khoản? Đăng ký</div>
+    </div>
+
+    <!-- REGISTER -->
+    <div class="card hidden" id="registerBox">
+        <h2>🌸 ĐĂNG KÝ</h2>
+        <input class="input" id="regUser" placeholder="Tên đăng nhập">
+        <input class="input" id="regEmail" placeholder="Email">
+        <input class="input" id="regPass" type="password" placeholder="Mật khẩu">
+        <button class="btn" id="registerBtn">Đăng ký</button>
+        <div class="switch" id="toLogin">Quay lại đăng nhập</div>
+    </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== ELEMENT ===== */
+const loginBox = document.getElementById("loginBox");
+const registerBox = document.getElementById("registerBox");
+const toast = document.getElementById("toast");
+
+const loginUser = document.getElementById("loginUser");
+const loginPass = document.getElementById("loginPass");
+const regUser = document.getElementById("regUser");
+const regPass = document.getElementById("regPass");
+const regEmail = document.getElementById("regEmail");
+
+/* ===== HELPERS ===== */
+function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add("show");
+    setTimeout(()=>toast.classList.remove("show"),1500);
+}
+
+function getAccounts(){
+    return JSON.parse(localStorage.getItem("robotAI_accounts") || "[]");
+}
+
+function saveAccounts(arr){
+    localStorage.setItem("robotAI_accounts", JSON.stringify(arr));
+}
+
+/* ===== SWITCH ===== */
+toRegister.onclick = () => {
+    loginBox.classList.add("hidden");
+    registerBox.classList.remove("hidden");
+};
+toLogin.onclick = () => {
+    registerBox.classList.add("hidden");
+    loginBox.classList.remove("hidden");
+};
+
+/* ===== REGISTER (CHECK TRÙNG) ===== */
+registerBtn.onclick = () => {
+    const user = regUser.value.trim();
+    const pass = regPass.value.trim();
+    const email = regEmail.value.trim();
+
+    if(!user || !pass || !email){
+        showToast("⚠️ Nhập đầy đủ thông tin");
+        return;
+    }
+
+    let accounts = getAccounts();
+
+    if(accounts.some(acc => acc.user === user)){
+        showToast("❌ Tài khoản đã tồn tại");
+        return;
+    }
+
+    accounts.push({user, pass, email});
+    saveAccounts(accounts);
+
+    showToast("🎉 Đăng ký thành công");
+
+    setTimeout(()=>{
+        registerBox.classList.add("hidden");
+        loginBox.classList.remove("hidden");
+        regUser.value = regPass.value = regEmail.value = "";
+    },1200);
+};
+
+/* ===== LOGIN ===== */
+loginBtn.onclick = () => {
+    const accounts = getAccounts();
+    const ok = accounts.find(
+        acc => acc.user === loginUser.value && acc.pass === loginPass.value
+    );
+
+    if(ok){
+        showToast("✅ Đăng nhập thành công");
+        setTimeout(()=>{
+            window.location.href = "https://toolfreebythomas.fun";
+        },1000);
+    }else{
+        showToast("❌ Sai tài khoản hoặc mật khẩu");
+    }
+};
+
+/* 🌸 SAKURA – MƯỢT */
+const canvas = document.getElementById("sakura");
+const ctx = canvas.getContext("2d");
+
+function resize(){
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
+}
+resize();
+addEventListener("resize", resize);
+
+const petals=[];
+for(let i=0;i<60;i++){
+    petals.push({
+        x:Math.random()*canvas.width,
+        y:Math.random()*canvas.height,
+        v:Math.random()*1.4+.6,
+        r:Math.random()*Math.PI
+    });
+}
+
+function drawPetal(p){
+    ctx.save();
+    ctx.translate(p.x,p.y);
+    ctx.rotate(p.r);
+    ctx.fillStyle="rgba(255,170,190,.95)";
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.bezierCurveTo(14,-14,28,14,0,28);
+    ctx.bezierCurveTo(-28,14,-14,-14,0,0);
+    ctx.fill();
+    ctx.restore();
+}
+
+function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    for(const p of petals){
+        p.y += p.v;
+        p.x += Math.sin(p.y*0.01);
+        p.r += 0.01;
+        if(p.y > canvas.height + 40){
+            p.y = -40;
+            p.x = Math.random()*canvas.width;
+        }
+        drawPetal(p);
+    }
+    requestAnimationFrame(animate);
+}
+animate();
+</script>
+
+</body>
+</html>
