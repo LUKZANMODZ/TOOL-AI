@@ -6,91 +6,48 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Segoe UI, sans-serif;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,sans-serif}
 body{
-    height:100vh;
-    overflow:hidden;
+    height:100vh;overflow:hidden;
     background:radial-gradient(circle at top,#ffb7c533,#020617 70%);
 }
-canvas{
-    position:fixed;
-    inset:0;
-    pointer-events:none;
-}
+canvas{position:fixed;inset:0;pointer-events:none}
 .container{
-    position:relative;
-    z-index:10;
-    width:100%;
-    height:100%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
+    position:relative;z-index:10;
+    width:100%;height:100%;
+    display:flex;align-items:center;justify-content:center;
 }
 .card{
-    width:360px;
-    padding:26px;
+    width:360px;padding:26px;
     border-radius:20px;
     background:rgba(15,20,40,.65);
     backdrop-filter:blur(14px);
     box-shadow:0 0 35px #ff9bbf55;
     animation:fade .3s ease;
 }
-@keyframes fade{
-    from{opacity:0;transform:scale(.94)}
-    to{opacity:1;transform:scale(1)}
-}
-h2{
-    text-align:center;
-    color:#ffd1e6;
-    margin-bottom:16px;
-}
+@keyframes fade{from{opacity:0;transform:scale(.94)}to{opacity:1}}
+h2{text-align:center;color:#ffd1e6;margin-bottom:16px}
 .input{
-    width:100%;
-    padding:13px;
-    margin:9px 0;
-    border:none;
-    border-radius:12px;
-    outline:none;
+    width:100%;padding:13px;margin:9px 0;
+    border:none;border-radius:12px;
     background:rgba(255,255,255,.12);
-    color:#fff;
+    color:#fff;outline:none;
 }
 .input::placeholder{color:#ffd6e8}
 .btn{
-    width:100%;
-    padding:13px;
-    margin-top:12px;
-    border:none;
-    border-radius:14px;
-    background:#ff9bbf;
-    font-weight:bold;
+    width:100%;padding:13px;margin-top:12px;
+    border:none;border-radius:14px;
+    background:#ff9bbf;font-weight:bold;
     cursor:pointer;
 }
-.switch{
-    text-align:center;
-    margin-top:12px;
-    font-size:13px;
-    color:#ffd6e8;
-    cursor:pointer;
-}
+.switch{text-align:center;margin-top:12px;font-size:13px;color:#ffd6e8;cursor:pointer}
 .hidden{display:none}
 .toast{
-    position:fixed;
-    bottom:40px;
-    left:50%;
+    position:fixed;bottom:40px;left:50%;
     transform:translateX(-50%);
-    background:#ff9bbf;
-    color:#240013;
-    padding:13px 24px;
-    border-radius:22px;
-    font-weight:bold;
-    opacity:0;
-    transition:.35s;
-    z-index:99;
+    background:#ff9bbf;color:#240013;
+    padding:13px 24px;border-radius:22px;
+    font-weight:bold;opacity:0;transition:.35s;z-index:99;
 }
 .toast.show{opacity:1}
 </style>
@@ -102,162 +59,118 @@ h2{
 
 <div class="container">
 
-    <!-- LOGIN -->
-    <div class="card" id="loginBox">
-        <h2>🤖 ROBOT AI LOGIN</h2>
-        <input class="input" id="loginUser" placeholder="Tên đăng nhập">
-        <input class="input" id="loginPass" type="password" placeholder="Mật khẩu">
-        <button class="btn" id="loginBtn">Đăng nhập</button>
-        <div class="switch" id="toRegister">Chưa có tài khoản? Đăng ký</div>
-    </div>
+<!-- LOGIN -->
+<div class="card" id="loginBox">
+<h2>🤖 ROBOT AI LOGIN</h2>
+<input class="input" id="loginUser" placeholder="Tên đăng nhập">
+<input class="input" id="loginPass" type="password" placeholder="Mật khẩu">
+<button class="btn" onclick="login()">Đăng nhập</button>
+<div class="switch" onclick="showRegister()">Chưa có tài khoản? Đăng ký</div>
+</div>
 
-    <!-- REGISTER -->
-    <div class="card hidden" id="registerBox">
-        <h2>🌸 ĐĂNG KÝ</h2>
-        <input class="input" id="regUser" placeholder="Tên đăng nhập">
-        <input class="input" id="regEmail" placeholder="Email">
-        <input class="input" id="regPass" type="password" placeholder="Mật khẩu">
-        <button class="btn" id="registerBtn">Đăng ký</button>
-        <div class="switch" id="toLogin">Quay lại đăng nhập</div>
-    </div>
+<!-- REGISTER -->
+<div class="card hidden" id="registerBox">
+<h2>🌸 ĐĂNG KÝ</h2>
+<input class="input" id="regUser" placeholder="Tên đăng nhập">
+<input class="input" id="regPass" type="password" placeholder="Mật khẩu">
+<button class="btn" onclick="register()">Đăng ký</button>
+<div class="switch" onclick="showLogin()">Quay lại đăng nhập</div>
+</div>
+
+<!-- KEY -->
+<div class="card hidden" id="keyBox">
+<h2>🔑 NHẬP KEY</h2>
+<input class="input" id="keyInput" placeholder="Nhập key">
+<button class="btn" onclick="checkKey()">Xác nhận</button>
+</div>
 
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-/* ===== ELEMENT ===== */
-const loginBox = document.getElementById("loginBox");
-const registerBox = document.getElementById("registerBox");
-const toast = document.getElementById("toast");
-
-const loginUser = document.getElementById("loginUser");
-const loginPass = document.getElementById("loginPass");
-const regUser = document.getElementById("regUser");
-const regPass = document.getElementById("regPass");
-const regEmail = document.getElementById("regEmail");
-
-/* ===== HELPERS ===== */
+/* ===== TOAST ===== */
+const toastBox=document.getElementById("toast")
 function showToast(msg){
-    toast.textContent = msg;
-    toast.classList.add("show");
-    setTimeout(()=>toast.classList.remove("show"),1500);
-}
-
-function getAccounts(){
-    return JSON.parse(localStorage.getItem("robotAI_accounts") || "[]");
-}
-
-function saveAccounts(arr){
-    localStorage.setItem("robotAI_accounts", JSON.stringify(arr));
+    toastBox.innerText=msg
+    toastBox.classList.add("show")
+    setTimeout(()=>toastBox.classList.remove("show"),1500)
 }
 
 /* ===== SWITCH ===== */
-toRegister.onclick = () => {
-    loginBox.classList.add("hidden");
-    registerBox.classList.remove("hidden");
-};
-toLogin.onclick = () => {
-    registerBox.classList.add("hidden");
-    loginBox.classList.remove("hidden");
-};
+const loginBox=document.getElementById("loginBox")
+const registerBox=document.getElementById("registerBox")
+const keyBox=document.getElementById("keyBox")
+function showRegister(){loginBox.classList.add("hidden");registerBox.classList.remove("hidden")}
+function showLogin(){registerBox.classList.add("hidden");loginBox.classList.remove("hidden")}
 
-/* ===== REGISTER (CHECK TRÙNG) ===== */
-registerBtn.onclick = () => {
-    const user = regUser.value.trim();
-    const pass = regPass.value.trim();
-    const email = regEmail.value.trim();
+/* ===== ACCOUNT ===== */
+function getAcc(){return JSON.parse(localStorage.getItem("ACC")||"[]")}
+function saveAcc(a){localStorage.setItem("ACC",JSON.stringify(a))}
 
-    if(!user || !pass || !email){
-        showToast("⚠️ Nhập đầy đủ thông tin");
-        return;
-    }
+function register(){
+    let u=regUser.value.trim(),p=regPass.value.trim()
+    if(!u||!p)return showToast("⚠️ Nhập đủ thông tin")
+    let a=getAcc()
+    if(a.some(x=>x.u===u))return showToast("❌ Tài khoản tồn tại")
+    a.push({u,p});saveAcc(a)
+    showToast("🎉 Đăng ký thành công")
+    showLogin()
+}
 
-    let accounts = getAccounts();
-
-    if(accounts.some(acc => acc.user === user)){
-        showToast("❌ Tài khoản đã tồn tại");
-        return;
-    }
-
-    accounts.push({user, pass, email});
-    saveAccounts(accounts);
-
-    showToast("🎉 Đăng ký thành công");
-
+function login(){
+    let a=getAcc()
+    let ok=a.find(x=>x.u===loginUser.value&&x.p===loginPass.value)
+    if(!ok)return showToast("❌ Sai tài khoản")
+    showToast("✅ Đăng nhập thành công")
     setTimeout(()=>{
-        registerBox.classList.add("hidden");
-        loginBox.classList.remove("hidden");
-        regUser.value = regPass.value = regEmail.value = "";
-    },1200);
-};
-
-/* ===== LOGIN ===== */
-loginBtn.onclick = () => {
-    const accounts = getAccounts();
-    const ok = accounts.find(
-        acc => acc.user === loginUser.value && acc.pass === loginPass.value
-    );
-
-    if(ok){
-        showToast("✅ Đăng nhập thành công");
-        setTimeout(()=>{
-            window.location.href = "https://toolfreebythomas.fun";
-        },1000);
-    }else{
-        showToast("❌ Sai tài khoản hoặc mật khẩu");
-    }
-};
-
-/* 🌸 SAKURA – MƯỢT */
-const canvas = document.getElementById("sakura");
-const ctx = canvas.getContext("2d");
-
-function resize(){
-    canvas.width = innerWidth;
-    canvas.height = innerHeight;
-}
-resize();
-addEventListener("resize", resize);
-
-const petals=[];
-for(let i=0;i<60;i++){
-    petals.push({
-        x:Math.random()*canvas.width,
-        y:Math.random()*canvas.height,
-        v:Math.random()*1.4+.6,
-        r:Math.random()*Math.PI
-    });
+        loginBox.classList.add("hidden")
+        keyBox.classList.remove("hidden")
+    },700)
 }
 
-function drawPetal(p){
-    ctx.save();
-    ctx.translate(p.x,p.y);
-    ctx.rotate(p.r);
-    ctx.fillStyle="rgba(255,170,190,.95)";
-    ctx.beginPath();
-    ctx.moveTo(0,0);
-    ctx.bezierCurveTo(14,-14,28,14,0,28);
-    ctx.bezierCurveTo(-28,14,-14,-14,0,0);
-    ctx.fill();
-    ctx.restore();
+/* ===== FIXED KEY ===== */
+function checkKey(){
+    const FIXED_KEY="TD-1029384756"
+    if(keyInput.value.trim()!==FIXED_KEY)
+        return showToast("❌ Key không hợp lệ")
+    showToast("🚀 Key hợp lệ – vào tool")
+    setTimeout(()=>{
+        window.location.href="https://toolfreebythomas.fun"
+    },1000)
 }
 
-function animate(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    for(const p of petals){
-        p.y += p.v;
-        p.x += Math.sin(p.y*0.01);
-        p.r += 0.01;
-        if(p.y > canvas.height + 40){
-            p.y = -40;
-            p.x = Math.random()*canvas.width;
-        }
-        drawPetal(p);
-    }
-    requestAnimationFrame(animate);
+/* 🌸 SAKURA EFFECT ===== */
+const canvas=document.getElementById("sakura"),ctx=canvas.getContext("2d")
+function resize(){canvas.width=innerWidth;canvas.height=innerHeight}
+resize();addEventListener("resize",resize)
+let petals=[...Array(60)].map(()=>({
+    x:Math.random()*canvas.width,
+    y:Math.random()*canvas.height,
+    v:Math.random()*1.4+.6,
+    r:Math.random()*Math.PI
+}))
+function draw(p){
+    ctx.save()
+    ctx.translate(p.x,p.y)
+    ctx.rotate(p.r)
+    ctx.fillStyle="rgba(255,170,190,.95)"
+    ctx.beginPath()
+    ctx.moveTo(0,0)
+    ctx.bezierCurveTo(14,-14,28,14,0,28)
+    ctx.bezierCurveTo(-28,14,-14,-14,0,0)
+    ctx.fill()
+    ctx.restore()
 }
-animate();
+;(function anim(){
+    ctx.clearRect(0,0,canvas.width,canvas.height)
+    petals.forEach(p=>{
+        p.y+=p.v;p.x+=Math.sin(p.y*0.01);p.r+=0.01
+        if(p.y>canvas.height+40){p.y=-40;p.x=Math.random()*canvas.width}
+        draw(p)
+    })
+    requestAnimationFrame(anim)
+})()
 </script>
 
 </body>
