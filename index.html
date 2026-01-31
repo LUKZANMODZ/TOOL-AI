@@ -146,15 +146,26 @@ function login(){
 }
 
 function hashKey(str){
-  let h=0; for(let i=0;i<str.length;i++){h=(h<<5)-h+str.charCodeAt(i); h|=0} return h
+  let h = 0
+  for(let i=0;i<str.length;i++){
+    h = (h << 5) - h + str.charCodeAt(i)
+    h |= 0
+  }
+  return h
 }
+
+// HASH của key: 123456
 const KEY_HASH = 1450575459
-    
+
 function checkKey(){
-  if(hashKey(keyInput.value)!==KEY_HASH) return showToast("MUA KEY TẠI t.me/tiendungcrack")
+  if(hashKey(keyInput.value) !== KEY_HASH){
+    return showToast("❌ Key không hợp lệ")
+  }
   showToast("🚀 Key đúng – vào tool")
-  setTimeout(()=>{window.location.href="https://toolfreebythomas.fun"},1000)
-}
+  setTimeout(()=>{
+    window.location.href = "https://toolfreebythomas.fun"
+  },1000)
+  }
 
 /* ===== FX 120FPS ===== */
 const c=document.getElementById("fx"),x=c.getContext("2d")
