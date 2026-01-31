@@ -2,173 +2,159 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>ROBOT AI TOOL</title>
+<title>TOOL AI LOGIN</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,sans-serif}
-body{
-  height:100vh;overflow:hidden;
-  background:radial-gradient(circle at top,#8fd3ff33,#020617 70%);
-}
-canvas{position:fixed;inset:0;pointer-events:none}
-.container{
-  position:relative;z-index:10;width:100%;height:100%;
-  display:flex;align-items:center;justify-content:center;
-}
-.card{
-  width:380px;padding:26px;border-radius:22px;
-  background:rgba(10,20,40,.65);
-  backdrop-filter:blur(14px);
-  box-shadow:0 0 40px #5cc8ff55;
-  animation:fade .25s ease;
-}
-@keyframes fade{from{opacity:0;transform:<!DOCTYPE html>
-<html lang="vi">
-<head>
-<meta charset="UTF-8">
-<title>LOGIN TOOL</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
 *{box-sizing:border-box;font-family:sans-serif}
 body{
   margin:0;
-  background:#0b0f1a;
-  color:#fff;
+  height:100vh;
+  background:radial-gradient(circle at top,#cfd8dc,#0a0f1f);
   overflow:hidden;
+  color:#fff;
 }
+
+/* hiệu ứng hạt */
+canvas{position:fixed;top:0;left:0;z-index:-1}
+
 .container{
-  position:relative;
-  z-index:2;
-  max-width:360px;
+  width:320px;
   margin:60px auto;
+  background:rgba(255,255,255,0.12);
   padding:20px;
-  background:rgba(20,25,45,.9);
-  border-radius:20px;
-  box-shadow:0 0 30px #00f2ff55;
+  border-radius:16px;
+  backdrop-filter:blur(10px);
 }
+
 .avatar{
-  width:120px;
-  height:120px;
+  width:90px;height:90px;
   border-radius:50%;
-  background:#10172a;
+  margin:0 auto 10px;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:70px;
-  margin:0 auto 15px;
-  box-shadow:0 0 25px #00f2ff;
+  font-size:48px;
+  background:rgba(255,255,255,0.2);
 }
-h2{text-align:center;margin-bottom:10px}
-input,button{
+
+h2{text-align:center;margin:10px 0}
+
+input{
   width:100%;
   padding:12px;
   margin:6px 0;
   border:none;
-  border-radius:10px;
-  font-size:15px;
+  border-radius:12px;
+  outline:none;
 }
-input{background:#0f1730;color:#fff}
+
 button{
-  background:#00f2ff;
-  color:#000;
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border:none;
+  border-radius:14px;
+  background:#3bbdf8;
+  color:#fff;
   font-weight:bold;
   cursor:pointer;
 }
-button:hover{opacity:.85}
-.link{
+
+.switch{
   text-align:center;
-  margin-top:8px;
-  color:#00f2ff;
+  margin-top:10px;
+  font-size:13px;
+  color:#cfefff;
   cursor:pointer;
 }
+
 .hidden{display:none}
+
 .toast{
   position:fixed;
-  bottom:30px;
+  bottom:20px;
   left:50%;
   transform:translateX(-50%);
-  background:#111;
+  background:#000;
   padding:10px 18px;
-  border-radius:12px;
-  box-shadow:0 0 15px #00f2ff;
-  z-index:99;
+  border-radius:20px;
+  opacity:0;
+  transition:.3s;
 }
-canvas{
-  position:fixed;
-  top:0;left:0;
-  z-index:1;
-}
+.toast.show{opacity:1}
 </style>
 </head>
+
 <body>
+<canvas id="fx"></canvas>
 
-<canvas id="snow"></canvas>
-
-<div class="container">
+<div class="container" id="loginBox">
   <div class="avatar">🤖</div>
-
-  <!-- LOGIN -->
-  <div id="loginBox">
-    <h2>Đăng nhập</h2>
-    <input id="loginUser" placeholder="Tên đăng nhập">
-    <input id="loginPass" type="password" placeholder="Mật khẩu">
-    <button onclick="login()">ĐĂNG NHẬP</button>
-    <div class="link" onclick="showRegister()">Chưa có tài khoản?</div>
-  </div>
-
-  <!-- REGISTER -->
-  <div id="registerBox" class="hidden">
-    <h2>Đăng ký</h2>
-    <input id="regMail" placeholder="Gmail">
-    <input id="regUser" placeholder="Tên đăng nhập">
-    <input id="regPass" type="password" placeholder="Mật khẩu">
-    <input id="regPass2" type="password" placeholder="Xác nhận mật khẩu">
-    <button onclick="register()">ĐĂNG KÝ</button>
-    <div class="link" onclick="showLogin()">Quay lại đăng nhập</div>
-  </div>
-
-  <!-- KEY -->
-  <div id="keyBox" class="hidden">
-    <h2>Nhập Key</h2>
-    <input id="keyInput" type="password" placeholder="Nhập key">
-    <button onclick="checkKey()">XÁC NHẬN</button>
-  </div>
+  <h2>Đăng nhập</h2>
+  <input id="loginUser" placeholder="Tên đăng nhập">
+  <input id="loginPass" type="password" placeholder="Mật khẩu">
+  <button onclick="login()">ĐĂNG NHẬP</button>
+  <div class="switch" onclick="showRegister()">Chưa có tài khoản?</div>
 </div>
 
+<div class="container hidden" id="registerBox">
+  <div class="avatar">🤖</div>
+  <h2>Đăng ký</h2>
+  <input id="regMail" placeholder="Gmail">
+  <input id="regUser" placeholder="Tên đăng nhập">
+  <input id="regPass" type="password" placeholder="Mật khẩu">
+  <input id="regPass2" type="password" placeholder="Xác nhận mật khẩu">
+  <button onclick="register()">ĐĂNG KÝ</button>
+  <div class="switch" onclick="showLogin()">Quay lại đăng nhập</div>
+</div>
+
+<div class="container hidden" id="keyBox">
+  <div class="avatar">🤖</div>
+  <h2>Nhập KEY</h2>
+  <input id="keyInput" type="password" placeholder="Nhập key">
+  <button onclick="checkKey()">XÁC NHẬN</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
-/* ===== TOAST ===== */
-function showToast(t){
-  const d=document.createElement("div")
-  d.className="toast"
-  d.innerText=t
-  document.body.appendChild(d)
-  setTimeout(()=>d.remove(),2000)
+// ========= TOOL CONFIG =========
+const TOOL_LINK = atob("aHR0cHM6Ly9sdWthemFubW9kei5naXRodWIuaW8vVE9PTC1BSS8=")
+const KEY_HASH = "2e4f96a4d2b13f6b16d0c7f5b9b78f7c9d6c2b43a10b93c4b55b0c6c77d6c4ef"
+
+function loadUsers(){
+  return JSON.parse(localStorage.getItem("USERS")||"[]")
 }
 
-/* ===== SWITCH ===== */
+function showToast(msg){
+  const t=document.getElementById("toast")
+  t.innerText=msg
+  t.classList.add("show")
+  setTimeout(()=>t.classList.remove("show"),2000)
+}
+
 function showRegister(){
   loginBox.classList.add("hidden")
   registerBox.classList.remove("hidden")
 }
+
 function showLogin(){
   registerBox.classList.add("hidden")
   loginBox.classList.remove("hidden")
 }
 
-/* ===== DATA ===== */
-let users = JSON.parse(localStorage.getItem("USERS")||"[]")
-
-/* ===== REGISTER ===== */
 function register(){
+  let users=loadUsers()
   if(regPass.value!==regPass2.value){
     showToast("❌ Mật khẩu không khớp");return
   }
-  if(users.some(u=>u.user===regUser.value || u.mail===regMail.value)){
+  if(users.some(u=>u.user===regUser.value||u.mail===regMail.value)){
     showToast("❌ Gmail hoặc user đã tồn tại");return
   }
   users.push({
-    mail:regMail.value,
-    user:regUser.value,
+    mail:regMail.value.trim(),
+    user:regUser.value.trim(),
     pass:regPass.value
   })
   localStorage.setItem("USERS",JSON.stringify(users))
@@ -176,476 +162,46 @@ function register(){
   showLogin()
 }
 
-/* ===== LOGIN ===== */
 function login(){
-  const u=users.find(x=>x.user===loginUser.value && x.pass===loginPass.value)
-  if(!u){showToast("❌ Sai thông tin");return}
+  let users=loadUsers()
+  let u=users.find(x=>x.user===loginUser.value&&x.pass===loginPass.value)
+  if(!u){showToast("❌ Sai tài khoản");return}
   showToast("✅ Đăng nhập thành công")
   loginBox.classList.add("hidden")
   keyBox.classList.remove("hidden")
 }
 
-/* ===== HASH ENGINE ===== */
-function hashKey(s){
-  let h=0
-  for(let i=0;i<s.length;i++){
-    h=(h<<5)-h+s.charCodeAt(i)
-    h|=0
-  }
-  return h
-}
-
-/* ===== CHỈ SỬA DÒNG NÀY KHI ĐỔI KEY ===== */
-const KEY_HASH = 1958194156 // TD-1029384756
-
-/* ===== LINK ĐÃ MÃ HOÁ ===== */
-function decodeURL(){
-  return atob("aHR0cHM6Ly95b3VyLXRvb2wtbGluay5jb20=")
-}
-
-/* ===== CHECK KEY ===== */
-function checkKey(){
-  if(hashKey(keyInput.value.trim())!==KEY_HASH){
+async function checkKey(){
+  let k=keyInput.value
+  let hash=await sha256(k)
+  if(hash!==KEY_HASH){
     showToast("❌ Key không đúng");return
   }
   showToast("✅ Key hợp lệ")
-  setTimeout(()=>location.href=decodeURL(),800)
+  setTimeout(()=>location.href=TOOL_LINK,1000)
 }
 
-/* ===== SNOW EFFECT ===== */
-const c=document.getElementById("snow"),x=c.getContext("2d")
-function rs(){c.width=innerWidth;c.height=innerHeight}
-rs();addEventListener("resize",rs)
-let snow=[...Array(80)].map(()=>({
-  x:Math.random()*c.width,
-  y:Math.random()*c.height,
-  r:Math.random()*3+1,
-  v:Math.random()*1+.3
-}))
-function draw(){
-  x.clearRect(0,0,c.width,c.height)
-  snow.forEach(s=>{
-    x.beginPath()
-    x.arc(s.x,s.y,s.r,0,7)
-    x.fillStyle="#ffffffcc"
-    x.fill()
-    s.y+=s.v
-    if(s.y>c.height){s.y=0;s.x=Math.random()*c.width}
-  })
-  requestAnimationFrame(draw)
-}
-draw()
-</script>
-
-</body>
-</html>(.94)}to{opacity:1}}
-
-h2{text-align:center;color:#cfefff;margin-bottom:12px}
-.input{
-  width:100%;padding:13px;margin:8px 0;border:none;border-radius:14px;
-  background:rgba(255,255,255,.12);color:#fff;outline:none;
-}
-.input::placeholder{color:#cfefff}
-.btn{
-  width:100%;padding:13px;margin-top:12px;border:none;border-radius:16px;
-  background:#38bdf8;font-weight:bold;cursor:pointer;
-}
-.switch{text-align:center;margin-top:12px;font-size:13px;color:#cfefff;cursor:pointer}
-.hidden{display:none}
-
-/* ===== TOAST ===== */
-.toast{
-  position:fixed;bottom:40px;left:50%;transform:translateX(-50%);
-  background:#38bdf8;color:#022c44;padding:12px 22px;border-radius:22px;
-  font-weight:bold;opacity:0;transition:.35s;z-index:99;
-}
-.toast.show{opacity:1}
-
-/* ===== AVATAR FULL FX ===== */
-.avatar{
-  width:130px;height:130px;border-radius:50%;
-  margin:0 auto 16px;position:relative;cursor:pointer;
-  background:radial-gradient(circle at 30% 30%,#7dd3ff,#2563eb);
-  box-shadow:0 0 40px #7dd3ffaa;
-  display:flex;align-items:center;justify-content:center;
-  animation:pulse 2.5s ease-in-out infinite;
-}
-.avatar::before{
-  content:"";position:absolute;inset:-4px;border-radius:50%;
-  background:conic-gradient(from 0deg,transparent,#9ee7ff,#38bdf8,transparent);
-  animation:spin 3s linear infinite;z-index:-1;filter:blur(2px);
-}
-.robot{
-  font-size:92px;line-height:1;
-  animation:float 3s ease-in-out infinite;
-  filter:drop-shadow(0 0 12px #9ee7ff);
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
-@keyframes float{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
-</style>
-</head>
-
-<body>
-<canvas id="fx"></canvas>
-
-<div class="container">
-
-<!-- LOGIN -->
-<div class="card" id="loginBox">
-  <div class="avatar" onclick="openRegister()"><span class="robot"></span></div>
-  <h2>ĐĂNG NHẬP</h2>
-  <input class="input" id="loginUser" placeholder="Tên đăng nhập">
-  <input class="input" id="loginPass" type="password" placeholder="Mật khẩu">
-  <button class="btn" onclick="login()">Đăng nhập</button>
-  <div class="switch" onclick="showRegister()">Chưa có tài khoản? Đăng ký</div>
-</div>
-
-<!-- REGISTER -->
-<div class="card hidden" id="registerBox">
-  <div class="avatar" onclick="showLogin()"><span class="robot"></span></div>
-  <h2>ĐĂNG KÝ</h2>
-  <input class="input" id="regMail" placeholder="Gmail">
-  <input class="input" id="regUser" placeholder="Tên đăng nhập">
-  <input class="input" id="regPass" type="password" placeholder="Mật khẩu">
-  <input class="input" id="regPass2" type="password" placeholder="Xác nhận mật khẩu">
-  <button class="btn" onclick="register()">Đăng ký</button>
-  <div class="switch" onclick="showLogin()">Quay lại đăng nhập</div>
-</div>
-
-<!-- KEY -->
-<div class="card hidden" id="keyBox">
-  <div class="avatar"><span class="robot"></span></div>
-  <h2>NHẬP KEY</h2>
-  <input class="input" id="keyInput" type="password" placeholder="Nhập key">
-  <button class="btn" onclick="checkKey()">Xác nhận</button>
-</div>
-
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script>
-/* ===== TOAST ===== */
-const toast=document.getElementById("toast")
-function showToast(t){toast.innerText=t;toast.classList.add("show");setTimeout(()=>toast.classList.remove("show"),1500)}
-
-/* ===== SWITCH ===== */
-const loginBox=document.getElementById("loginBox")
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-<meta charset="UTF-8">
-<title>LOGIN TOOL</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-*{box-sizing:border-box;font-family:sans-serif}
-body{
-  margin:0;
-  background:#0b0f1a;
-  color:#fff;
-  overflow:hidden;
-}
-.container{
-  position:relative;
-  z-index:2;
-  max-width:360px;
-  margin:60px auto;
-  padding:20px;
-  background:rgba(20,25,45,.9);
-  border-radius:20px;
-  box-shadow:0 0 30px #00f2ff55;
-}
-.avatar{
-  width:120px;
-  height:120px;
-  border-radius:50%;
-  background:#10172a;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:70px;
-  margin:0 auto 15px;
-  box-shadow:0 0 25px #00f2ff;
-}
-h2{text-align:center;margin-bottom:10px}
-input,button{
-  width:100%;
-  padding:12px;
-  margin:6px 0;
-  border:none;
-  border-radius:10px;
-  font-size:15px;
-}
-input{background:#0f1730;color:#fff}
-button{
-  background:#00f2ff;
-  color:#000;
-  font-weight:bold;
-  cursor:pointer;
-}
-button:hover{opacity:.85}
-.link{
-  text-align:center;
-  margin-top:8px;
-  color:#00f2ff;
-  cursor:pointer;
-}
-.hidden{display:none}
-.toast{
-  position:fixed;
-  bottom:30px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#111;
-  padding:10px 18px;
-  border-radius:12px;
-  box-shadow:0 0 15px #00f2ff;
-  z-index:99;
-}
-canvas{
-  position:fixed;
-  top:0;left:0;
-  z-index:1;
-}
-</style>
-</head>
-<body>
-
-<canvas id="snow"></canvas>
-
-<div class="container">
-  <div class="avatar">🤖</div>
-
-  <!-- LOGIN -->
-  <div id="loginBox">
-    <h2>Đăng nhập</h2>
-    <input id="loginUser" placeholder="Tên đăng nhập">
-    <input id="loginPass" type="password" placeholder="Mật khẩu">
-    <button onclick="login()">ĐĂNG NHẬP</button>
-    <div class="link" onclick="showRegister()">Chưa có tài khoản?</div>
-  </div>
-
-  <!-- REGISTER -->
-  <div id="registerBox" class="hidden">
-    <h2>Đăng ký</h2>
-    <input id="regMail" placeholder="Gmail">
-    <input id="regUser" placeholder="Tên đăng nhập">
-    <input id="regPass" type="password" placeholder="Mật khẩu">
-    <input id="regPass2" type="password" placeholder="Xác nhận mật khẩu">
-    <button onclick="register()">ĐĂNG KÝ</button>
-    <div class="link" onclick="showLogin()">Quay lại đăng nhập</div>
-  </div>
-
-  <!-- KEY -->
-  <div id="keyBox" class="hidden">
-    <h2>Nhập Key</h2>
-    <input id="keyInput" type="password" placeholder="Nhập key">
-    <button onclick="checkKey()">XÁC NHẬN</button>
-  </div>
-</div>
-
-<script>
-/* ===== TOAST ===== */
-function showToast(t){
-  const d=document.createElement("div")
-  d.className="toast"
-  d.innerText=t
-  document.body.appendChild(d)
-  setTimeout(()=>d.remove(),2000)
+async function sha256(t){
+  const b=new TextEncoder().encode(t)
+  const h=await crypto.subtle.digest("SHA-256",b)
+  return Array.from(new Uint8Array(h)).map(x=>x.toString(16).padStart(2,"0")).join("")
 }
 
-/* ===== SWITCH ===== */
-function showRegister(){
-  loginBox.classList.add("hidden")
-  registerBox.classList.remove("hidden")
-}
-function showLogin(){
-  registerBox.classList.add("hidden")
-  loginBox.classList.remove("hidden")
-}
-
-let users = JSON.parse(localStorage.getItem("USERS")||"[]")
-
-function register(){
-  if(regPass.value!==regPass2.value){
-    showToast("❌ Mật khẩu không khớp");return
-  }
-  if(users.some(u=>u.user===regUser.value || u.mail===regMail.value)){
-    showToast("❌ Gmail hoặc user đã tồn tại");return
-  }
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-<meta charset="UTF-8">
-<title>ROBOT AI TOOL</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,sans-serif}
-body{
-  height:100vh;overflow:hidden;
-  background:radial-gradient(circle at top,#8fd3ff33,#020617 70%);
-}
-canvas{position:fixed;inset:0;pointer-events:none}
-.container{
-  position:relative;z-index:10;width:100%;height:100%;
-  display:flex;align-items:center;justify-content:center;
-}
-.card{
-  width:380px;padding:26px;border-radius:22px;
-  background:rgba(10,20,40,.65);
-  backdrop-filter:blur(14px);
-  box-shadow:0 0 40px #5cc8ff55;
-  animation:fade .25s ease;
-}
-@keyframes fade{from{opacity:0;transform:scale(.94)}to{opacity:1}}
-h2{text-align:center;color:#cfefff;margin-bottom:12px}
-.input{
-  width:100%;padding:13px;margin:8px 0;border:none;border-radius:14px;
-  background:rgba(255,255,255,.12);color:#fff;outline:none;
-}
-.input::placeholder{color:#cfefff}
-.btn{
-  width:100%;padding:13px;margin-top:12px;border:none;border-radius:16px;
-  background:#38bdf8;font-weight:bold;cursor:pointer;
-}
-.switch{text-align:center;margin-top:12px;font-size:13px;color:#cfefff;cursor:pointer}
-.hidden{display:none}
-
-/* TOAST */
-.toast{
-  position:fixed;bottom:40px;left:50%;transform:translateX(-50%);
-  background:#38bdf8;color:#022c44;
-  padding:12px 22px;border-radius:22px;
-  font-weight:bold;opacity:0;transition:.35s;z-index:99;
-}
-.toast.show{opacity:1}
-
-/* AVATAR */
-.avatar{
-  width:130px;height:130px;border-radius:50%;
-  margin:0 auto 16px;position:relative;
-  background:radial-gradient(circle at 30% 30%,#7dd3ff,#2563eb);
-  box-shadow:0 0 40px #7dd3ffaa;
-  display:flex;align-items:center;justify-content:center;
-  animation:pulse 2.5s ease-in-out infinite;
-}
-.avatar::before{
-  content:"";position:absolute;inset:-4px;border-radius:50%;
-  background:conic-gradient(from 0deg,transparent,#9ee7ff,#38bdf8,transparent);
-  animation:spin 3s linear infinite;filter:blur(2px);
-}
-.robot{font-size:92px;filter:drop-shadow(0 0 12px #9ee7ff)}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
-</style>
-</head>
-
-<body>
-<canvas id="fx"></canvas>
-
-<div class="container">
-
-<!-- LOGIN -->
-<div class="card" id="loginBox">
-  <div class="avatar"><span class="robot">🤖</span></div>
-  <h2>ĐĂNG NHẬP</h2>
-  <input class="input" id="loginUser" placeholder="Tên đăng nhập">
-  <input class="input" id="loginPass" type="password" placeholder="Mật khẩu">
-  <button class="btn" onclick="login()">Đăng nhập</button>
-  <div class="switch" onclick="showRegister()">Chưa có tài khoản? Đăng ký</div>
-</div>
-
-<!-- REGISTER -->
-<div class="card hidden" id="registerBox">
-  <div class="avatar"><span class="robot">🤖</span></div>
-  <h2>ĐĂNG KÝ</h2>
-  <input class="input" id="regMail" placeholder="Gmail">
-  <input class="input" id="regUser" placeholder="Tên đăng nhập">
-  <input class="input" id="regPass" type="password" placeholder="Mật khẩu">
-  <input class="input" id="regPass2" type="password" placeholder="Xác nhận mật khẩu">
-  <button class="btn" onclick="register()">Đăng ký</button>
-  <div class="switch" onclick="showLogin()">Quay lại đăng nhập</div>
-</div>
-
-<!-- KEY -->
-<div class="card hidden" id="keyBox">
-  <div class="avatar"><span class="robot">🤖</span></div>
-  <h2>NHẬP KEY</h2>
-  <input class="input" id="keyInput" type="password" placeholder="Nhập key">
-  <button class="btn" onclick="checkKey()">Xác nhận</button>
-</div>
-
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script>
-/* TOAST */
-const toast=document.getElementById("toast")
-function showToast(t){toast.innerText=t;toast.classList.add("show");setTimeout(()=>toast.classList.remove("show"),1500)}
-
-/* SWITCH */
-const loginBox=document.getElementById("loginBox")
-const registerBox=document.getElementById("registerBox")
-const keyBox=document.getElementById("keyBox")
-function showRegister(){loginBox.classList.add("hidden");registerBox.classList.remove("hidden")}
-function showLogin(){registerBox.classList.add("hidden");loginBox.classList.remove("hidden")}
-
-/* DATA */
-function loadUsers(){return JSON.parse(localStorage.getItem("USERS")||"[]")}
-function saveUsers(u){localStorage.setItem("USERS",JSON.stringify(u))}
-
-/* REGISTER */
-function register(){
-  let mail=regMail.value.trim(), u=regUser.value.trim(), p=regPass.value, p2=regPass2.value
-  if(!mail||!u||!p||!p2) return showToast("⚠️ Nhập đủ thông tin")
-  if(p!==p2) return showToast("❌ Mật khẩu không khớp")
-  let users=loadUsers()
-  if(users.some(x=>x.mail===mail||x.user===u)) return showToast("❌ Gmail hoặc tên đăng nhập đã tồn tại")
-  users.push({mail,user:u,pass:p})
-  saveUsers(users)
-  showToast("🎉 Đăng ký thành công")
-  showLogin()
-}
-
-/* LOGIN */
-function login(){
-  let users=loadUsers()
-  let ok=users.find(x=>x.user===loginUser.value.trim()&&x.pass===loginPass.value)
-  if(!ok) return showToast("❌ Sai tài khoản hoặc mật khẩu")
-  showToast("✅ Đăng nhập thành công")
-  setTimeout(()=>{loginBox.classList.add("hidden");keyBox.classList.remove("hidden")},700)
-}
-
-/* HASH ENGINE */
-function _h(s){let h=0;for(let i=0;i<s.length;i++){h=(h<<5)-h+s.charCodeAt(i);h|=0}return h}
-
-const KEY_HASH = 1847362812
-
-function decodeURL(){
-  let e="bmV1Zi5zb2FtaHR5YmVlcmxvb3QvLzpzcHR0aA=="
-  return atob(e).split("").reverse().join("")
-}
-
-/* CHECK KEY */
-function checkKey(){
-  if(_h(keyInput.value.trim())!==KEY_HASH) return showToast("❌ Key không hợp lệ")
-  showToast("🚀 Key đúng – vào tool")
-  setTimeout(()=>{window.location.href=decodeURL()},900)
-}
-
-/* FX */
+// ========= FX =========
 const c=document.getElementById("fx"),ctx=c.getContext("2d")
-function rs(){c.width=innerWidth;c.height=innerHeight}
-rs();addEventListener("resize",rs)
-let dots=[...Array(90)].map(()=>({x:Math.random()*c.width,y:Math.random()*c.height,v:Math.random()*1.2+.4}))
-;(function fx(){
+function resize(){c.width=innerWidth;c.height=innerHeight}
+resize();onresize=resize
+let p=[...Array(120)].map(()=>({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*2+1}))
+function loop(){
   ctx.clearRect(0,0,c.width,c.height)
-  dots.forEach(d=>{d.y+=d.v;if(d.y>c.height){d.y=0;d.x=Math.random()*c.width}
-    ctx.fillStyle="rgba(150,220,255,.85)";ctx.fillRect(d.x,d.y,2,2)})
-  requestAnimationFrame(fx)
-})()
+  ctx.fillStyle="rgba(255,255,255,0.8)"
+  p.forEach(o=>{
+    o.y+=0.6;if(o.y>c.height)o.y=0
+    ctx.beginPath();ctx.arc(o.x,o.y,o.r,0,7);ctx.fill()
+  })
+  requestAnimationFrame(loop)
+}
+loop()
 </script>
 </body>
-</html>
+  </html>
