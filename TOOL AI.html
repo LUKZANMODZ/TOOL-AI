@@ -61,7 +61,7 @@ h2{text-align:center;color:#ffd1e6;margin-bottom:16px}
 
 <!-- LOGIN -->
 <div class="card" id="loginBox">
-<h2>🤖 ROBOT AI LOGIN</h2>
+<h2> LOGIN</h2>
 <input class="input" id="loginUser" placeholder="Tên đăng nhập">
 <input class="input" id="loginPass" type="password" placeholder="Mật khẩu">
 <button class="btn" onclick="login()">Đăng nhập</button>
@@ -131,7 +131,7 @@ function login(){
 
 /* ===== FIXED KEY ===== */
 function checkKey(){
-    const FIXED_KEY="TD-1029384756"
+    const FIXED_KEY="11"
     if(keyInput.value.trim()!==FIXED_KEY)
         return showToast("❌ Key không hợp lệ")
     showToast("🚀 Key hợp lệ – vào tool")
