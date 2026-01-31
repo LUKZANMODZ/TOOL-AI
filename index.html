@@ -22,7 +22,223 @@ canvas{position:fixed;inset:0;pointer-events:none}
   box-shadow:0 0 40px #5cc8ff55;
   animation:fade .25s ease;
 }
-@keyframes fade{from{opacity:0;transform:scale(.94)}to{opacity:1}}
+@keyframes fade{from{opacity:0;transform:<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>LOGIN TOOL</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+*{box-sizing:border-box;font-family:sans-serif}
+body{
+  margin:0;
+  background:#0b0f1a;
+  color:#fff;
+  overflow:hidden;
+}
+.container{
+  position:relative;
+  z-index:2;
+  max-width:360px;
+  margin:60px auto;
+  padding:20px;
+  background:rgba(20,25,45,.9);
+  border-radius:20px;
+  box-shadow:0 0 30px #00f2ff55;
+}
+.avatar{
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  background:#10172a;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:70px;
+  margin:0 auto 15px;
+  box-shadow:0 0 25px #00f2ff;
+}
+h2{text-align:center;margin-bottom:10px}
+input,button{
+  width:100%;
+  padding:12px;
+  margin:6px 0;
+  border:none;
+  border-radius:10px;
+  font-size:15px;
+}
+input{background:#0f1730;color:#fff}
+button{
+  background:#00f2ff;
+  color:#000;
+  font-weight:bold;
+  cursor:pointer;
+}
+button:hover{opacity:.85}
+.link{
+  text-align:center;
+  margin-top:8px;
+  color:#00f2ff;
+  cursor:pointer;
+}
+.hidden{display:none}
+.toast{
+  position:fixed;
+  bottom:30px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#111;
+  padding:10px 18px;
+  border-radius:12px;
+  box-shadow:0 0 15px #00f2ff;
+  z-index:99;
+}
+canvas{
+  position:fixed;
+  top:0;left:0;
+  z-index:1;
+}
+</style>
+</head>
+<body>
+
+<canvas id="snow"></canvas>
+
+<div class="container">
+  <div class="avatar">🤖</div>
+
+  <!-- LOGIN -->
+  <div id="loginBox">
+    <h2>Đăng nhập</h2>
+    <input id="loginUser" placeholder="Tên đăng nhập">
+    <input id="loginPass" type="password" placeholder="Mật khẩu">
+    <button onclick="login()">ĐĂNG NHẬP</button>
+    <div class="link" onclick="showRegister()">Chưa có tài khoản?</div>
+  </div>
+
+  <!-- REGISTER -->
+  <div id="registerBox" class="hidden">
+    <h2>Đăng ký</h2>
+    <input id="regMail" placeholder="Gmail">
+    <input id="regUser" placeholder="Tên đăng nhập">
+    <input id="regPass" type="password" placeholder="Mật khẩu">
+    <input id="regPass2" type="password" placeholder="Xác nhận mật khẩu">
+    <button onclick="register()">ĐĂNG KÝ</button>
+    <div class="link" onclick="showLogin()">Quay lại đăng nhập</div>
+  </div>
+
+  <!-- KEY -->
+  <div id="keyBox" class="hidden">
+    <h2>Nhập Key</h2>
+    <input id="keyInput" type="password" placeholder="Nhập key">
+    <button onclick="checkKey()">XÁC NHẬN</button>
+  </div>
+</div>
+
+<script>
+/* ===== TOAST ===== */
+function showToast(t){
+  const d=document.createElement("div")
+  d.className="toast"
+  d.innerText=t
+  document.body.appendChild(d)
+  setTimeout(()=>d.remove(),2000)
+}
+
+/* ===== SWITCH ===== */
+function showRegister(){
+  loginBox.classList.add("hidden")
+  registerBox.classList.remove("hidden")
+}
+function showLogin(){
+  registerBox.classList.add("hidden")
+  loginBox.classList.remove("hidden")
+}
+
+/* ===== DATA ===== */
+let users = JSON.parse(localStorage.getItem("USERS")||"[]")
+
+/* ===== REGISTER ===== */
+function register(){
+  if(regPass.value!==regPass2.value){
+    showToast("❌ Mật khẩu không khớp");return
+  }
+  if(users.some(u=>u.user===regUser.value || u.mail===regMail.value)){
+    showToast("❌ Gmail hoặc user đã tồn tại");return
+  }
+  users.push({
+    mail:regMail.value,
+    user:regUser.value,
+    pass:regPass.value
+  })
+  localStorage.setItem("USERS",JSON.stringify(users))
+  showToast("✅ Đăng ký thành công")
+  showLogin()
+}
+
+/* ===== LOGIN ===== */
+function login(){
+  const u=users.find(x=>x.user===loginUser.value && x.pass===loginPass.value)
+  if(!u){showToast("❌ Sai thông tin");return}
+  showToast("✅ Đăng nhập thành công")
+  loginBox.classList.add("hidden")
+  keyBox.classList.remove("hidden")
+}
+
+/* ===== HASH ENGINE ===== */
+function hashKey(s){
+  let h=0
+  for(let i=0;i<s.length;i++){
+    h=(h<<5)-h+s.charCodeAt(i)
+    h|=0
+  }
+  return h
+}
+
+/* ===== CHỈ SỬA DÒNG NÀY KHI ĐỔI KEY ===== */
+const KEY_HASH = 1958194156 // TD-1029384756
+
+/* ===== LINK ĐÃ MÃ HOÁ ===== */
+function decodeURL(){
+  return atob("aHR0cHM6Ly95b3VyLXRvb2wtbGluay5jb20=")
+}
+
+/* ===== CHECK KEY ===== */
+function checkKey(){
+  if(hashKey(keyInput.value.trim())!==KEY_HASH){
+    showToast("❌ Key không đúng");return
+  }
+  showToast("✅ Key hợp lệ")
+  setTimeout(()=>location.href=decodeURL(),800)
+}
+
+/* ===== SNOW EFFECT ===== */
+const c=document.getElementById("snow"),x=c.getContext("2d")
+function rs(){c.width=innerWidth;c.height=innerHeight}
+rs();addEventListener("resize",rs)
+let snow=[...Array(80)].map(()=>({
+  x:Math.random()*c.width,
+  y:Math.random()*c.height,
+  r:Math.random()*3+1,
+  v:Math.random()*1+.3
+}))
+function draw(){
+  x.clearRect(0,0,c.width,c.height)
+  snow.forEach(s=>{
+    x.beginPath()
+    x.arc(s.x,s.y,s.r,0,7)
+    x.fillStyle="#ffffffcc"
+    x.fill()
+    s.y+=s.v
+    if(s.y>c.height){s.y=0;s.x=Math.random()*c.width}
+  })
+  requestAnimationFrame(draw)
+}
+draw()
+</script>
+
+</body>
+</html>(.94)}to{opacity:1}}
 
 h2{text-align:center;color:#cfefff;margin-bottom:12px}
 .input{
@@ -116,72 +332,212 @@ function showToast(t){toast.innerText=t;toast.classList.add("show");setTimeout((
 
 /* ===== SWITCH ===== */
 const loginBox=document.getElementById("loginBox")
-const registerBox=document.getElementById("registerBox")
-const keyBox=document.getElementById("keyBox")
-function showRegister(){loginBox.classList.add("hidden");registerBox.classList.remove("hidden")}
-function showLogin(){registerBox.classList.add("hidden");loginBox.classList.remove("hidden")}
-function openRegister(){showRegister();showToast("✨ Mở đăng ký")}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>LOGIN TOOL</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+*{box-sizing:border-box;font-family:sans-serif}
+body{
+  margin:0;
+  background:#0b0f1a;
+  color:#fff;
+  overflow:hidden;
+}
+.container{
+  position:relative;
+  z-index:2;
+  max-width:360px;
+  margin:60px auto;
+  padding:20px;
+  background:rgba(20,25,45,.9);
+  border-radius:20px;
+  box-shadow:0 0 30px #00f2ff55;
+}
+.avatar{
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  background:#10172a;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:70px;
+  margin:0 auto 15px;
+  box-shadow:0 0 25px #00f2ff;
+}
+h2{text-align:center;margin-bottom:10px}
+input,button{
+  width:100%;
+  padding:12px;
+  margin:6px 0;
+  border:none;
+  border-radius:10px;
+  font-size:15px;
+}
+input{background:#0f1730;color:#fff}
+button{
+  background:#00f2ff;
+  color:#000;
+  font-weight:bold;
+  cursor:pointer;
+}
+button:hover{opacity:.85}
+.link{
+  text-align:center;
+  margin-top:8px;
+  color:#00f2ff;
+  cursor:pointer;
+}
+.hidden{display:none}
+.toast{
+  position:fixed;
+  bottom:30px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#111;
+  padding:10px 18px;
+  border-radius:12px;
+  box-shadow:0 0 15px #00f2ff;
+  z-index:99;
+}
+canvas{
+  position:fixed;
+  top:0;left:0;
+  z-index:1;
+}
+</style>
+</head>
+<body>
 
-/* ===== DATA ===== */
-function getAcc(){return JSON.parse(localStorage.getItem("ACC")||"[]")}
-function saveAcc(a){localStorage.setItem("ACC",JSON.stringify(a))}
+<canvas id="snow"></canvas>
 
-/* ===== REGISTER ===== */
+<div class="container">
+  <div class="avatar">🤖</div>
+
+  <!-- LOGIN -->
+  <div id="loginBox">
+    <h2>Đăng nhập</h2>
+    <input id="loginUser" placeholder="Tên đăng nhập">
+    <input id="loginPass" type="password" placeholder="Mật khẩu">
+    <button onclick="login()">ĐĂNG NHẬP</button>
+    <div class="link" onclick="showRegister()">Chưa có tài khoản?</div>
+  </div>
+
+  <!-- REGISTER -->
+  <div id="registerBox" class="hidden">
+    <h2>Đăng ký</h2>
+    <input id="regMail" placeholder="Gmail">
+    <input id="regUser" placeholder="Tên đăng nhập">
+    <input id="regPass" type="password" placeholder="Mật khẩu">
+    <input id="regPass2" type="password" placeholder="Xác nhận mật khẩu">
+    <button onclick="register()">ĐĂNG KÝ</button>
+    <div class="link" onclick="showLogin()">Quay lại đăng nhập</div>
+  </div>
+
+  <!-- KEY -->
+  <div id="keyBox" class="hidden">
+    <h2>Nhập Key</h2>
+    <input id="keyInput" type="password" placeholder="Nhập key">
+    <button onclick="checkKey()">XÁC NHẬN</button>
+  </div>
+</div>
+
+<script>
+/* ===== TOAST ===== */
+function showToast(t){
+  const d=document.createElement("div")
+  d.className="toast"
+  d.innerText=t
+  document.body.appendChild(d)
+  setTimeout(()=>d.remove(),2000)
+}
+
+/* ===== SWITCH ===== */
+function showRegister(){
+  loginBox.classList.add("hidden")
+  registerBox.classList.remove("hidden")
+}
+function showLogin(){
+  registerBox.classList.add("hidden")
+  loginBox.classList.remove("hidden")
+}
+
+let users = JSON.parse(localStorage.getItem("USERS")||"[]")
+
 function register(){
-  let mail=regMail.value.trim(), u=regUser.value.trim(), p=regPass.value, p2=regPass2.value
-  if(!mail||!u||!p||!p2) return showToast("⚠️ Nhập đủ thông tin")
-  if(p!==p2) return showToast("❌ Mật khẩu không khớp")
-  let a=getAcc()
-  if(a.some(x=>x.mail===mail||x.u===u)) return showToast("❌ Gmail hoặc tên đăng nhập đã tồn tại")
-  a.push({mail,u,p}); saveAcc(a)
-  showToast("🎉 Đăng ký thành công"); showLogin()
+  if(regPass.value!==regPass2.value){
+    showToast("❌ Mật khẩu không khớp");return
+  }
+  if(users.some(u=>u.user===regUser.value || u.mail===regMail.value)){
+    showToast("❌ Gmail hoặc user đã tồn tại");return
+  }
+  users.push({
+    mail:regMail.value,
+    user:regUser.value,
+    pass:regPass.value
+  })
+  localStorage.setItem("USERS",JSON.stringify(users))
+  showToast("✅ Đăng ký thành công")
+  showLogin()
 }
 
 function login(){
-  let a=getAcc()
-  let ok=a.find(x=>x.u===loginUser.value && x.p===loginPass.value)
-  if(!ok) return showToast("❌ Sai tài khoản hoặc mật khẩu")
+  const u=users.find(x=>x.user===loginUser.value && x.pass===loginPass.value)
+  if(!u){showToast("❌ Sai thông tin");return}
   showToast("✅ Đăng nhập thành công")
-  setTimeout(()=>{loginBox.classList.add("hidden"); keyBox.classList.remove("hidden")},700)
+  loginBox.classList.add("hidden")
+  keyBox.classList.remove("hidden")
 }
 
-function hashKey(str){
-  let h = 0
-  for(let i = 0; i < str.length; i++){
-    h = (h << 5) - h + str.charCodeAt(i)
-    h |= 0
+function hashKey(s){
+  let h=0
+  for(let i=0;i<s.length;i++){
+    h=(h<<5)-h+s.charCodeAt(i)
+    h|=0
   }
   return h
 }
 
 const KEY_HASH = 1958194156
-// ↑ hash của key MỚI: DỊT MẸ XEM CÁI LỒN
 
+function decodeURL(){
+  return atob("aHR0cHM6Ly95b3VyLXRvb2wtbGluay5jb20=")
+}
 function checkKey(){
-  const userKey = keyInput.value.trim()
-
-  if(hashKey(userKey) !== KEY_HASH){
-    showToast("❌ Key không đúng")
-    return
+  if(hashKey(keyInput.value.trim())!==KEY_HASH){
+    showToast("❌ Key không đúng");return
   }
+  showToast("✅ Key hợp lệ")
+  setTimeout(()=>location.href=decodeURL(),800)
+}
 
-  showToast("✅ Key hợp lệ – truy cập")
-  setTimeout(()=>{
-    window.location.href = decodeURL()
-  }, 800)
-  }
-
-/* ===== FX 120FPS ===== */
-const c=document.getElementById("fx"),x=c.getContext("2d")
+/* ===== SNOW EFFECT ===== */
+const c=document.getElementById("snow"),x=c.getContext("2d")
 function rs(){c.width=innerWidth;c.height=innerHeight}
 rs();addEventListener("resize",rs)
-let dots=[...Array(90)].map(()=>({x:Math.random()*c.width,y:Math.random()*c.height,v:Math.random()*1.2+.4}))
-;(function fx(){
+let snow=[...Array(80)].map(()=>({
+  x:Math.random()*c.width,
+  y:Math.random()*c.height,
+  r:Math.random()*3+1,
+  v:Math.random()*1+.3
+}))
+function draw(){
   x.clearRect(0,0,c.width,c.height)
-  dots.forEach(d=>{d.y+=d.v; if(d.y>c.height){d.y=0;d.x=Math.random()*c.width}
-    x.fillStyle="rgba(150,220,255,.85)"; x.fillRect(d.x,d.y,2,2)})
-  requestAnimationFrame(fx)
-})()
+  snow.forEach(s=>{
+    x.beginPath()
+    x.arc(s.x,s.y,s.r,0,7)
+    x.fillStyle="#ffffffcc"
+    x.fill()
+    s.y+=s.v
+    if(s.y>c.height){s.y=0;s.x=Math.random()*c.width}
+  })
+  requestAnimationFrame(draw)
+}
+draw()
 </script>
+
 </body>
 </html>
