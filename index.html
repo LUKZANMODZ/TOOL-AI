@@ -145,10 +145,10 @@ function login(){
   setTimeout(()=>{loginBox.classList.add("hidden"); keyBox.classList.remove("hidden")},700)
 }
 
-function hashKey(str){
+function hashKey(random){
   let h = 0
   for(let i = 0; i < str.length; i++){
-    h = (h << 5) - h + str.charCodeAt(i)
+    h = (h << 5) - h + str.randomkey(i)
     h |= 0
   }
   return h
