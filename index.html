@@ -134,40 +134,61 @@ function checkKey(){
     const FIXED_KEY="TD-1029384756"
     if(keyInput.value.trim()!==FIXED_KEY)
         return showToast("❌ Key không hợp lệ")
-    showToast("🚀 Key hợp lệ – vào tool")
+    showToast("✅ Key hợp lệ - chúc bạn thắng lớn")
     setTimeout(()=>{
         window.location.href="https://toolfreebythomas.fun"
     },1000)
 }
 
-/* 🌸 SAKURA EFFECT ===== */
-const canvas=document.getElementById("sakura"),ctx=canvas.getContext("2d")
-function resize(){canvas.width=innerWidth;canvas.height=innerHeight}
-resize();addEventListener("resize",resize)
-let petals=[...Array(60)].map(()=>({
-    x:Math.random()*canvas.width,
-    y:Math.random()*canvas.height,
-    v:Math.random()*1.4+.6,
-    r:Math.random()*Math.PI
-}))
-function draw(p){
-    ctx.save()
-    ctx.translate(p.x,p.y)
-    ctx.rotate(p.r)
-    ctx.fillStyle="rgba(255,170,190,.95)"
-    ctx.beginPath()
-    ctx.moveTo(0,0)
-    ctx.bezierCurveTo(14,-14,28,14,0,28)
-    ctx.bezierCurveTo(-28,14,-14,-14,0,0)
-    ctx.fill()
-    ctx.restore()
+//* ❄️ SNOW EFFECT ===== */
+const canvas = document.getElementById("snow");
+const ctx = canvas.getContext("2d");
+
+function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 }
-;(function anim(){
-    ctx.clearRect(0,0,canvas.width,canvas.height)
-    petals.forEach(p=>{
-        p.y+=p.v;p.x+=Math.sin(p.y*0.01);p.r+=0.01
-        if(p.y>canvas.height+40){p.y=-40;p.x=Math.random()*canvas.width}
-        draw(p)
+resize();
+window.addEventListener("resize", resize);
+
+let snowflakes = [];
+
+for (let i = 0; i < 80; i++) {
+    snowflakes.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 2 + 1,     // kích thước tuyết
+        d: Math.random() * 1 + 0.5    // tốc độ rơi
+    });
+}
+
+function drawSnow() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "rgba(255,255,255,0.9)";
+    ctx.beginPath();
+    for (let i = 0; i < snowflakes.length; i++) {
+        let f = snowflakes[i];
+        ctx.moveTo(f.x, f.y);
+        ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2, true);
+    }
+    ctx.fill();
+    moveSnow();
+}
+
+function moveSnow() {
+    for (let i = 0; i < snowflakes.length; i++) {
+        let f = snowflakes[i];
+        f.y += f.d;
+        f.x += Math.sin(f.y * 0.01);
+
+        if (f.y > canvas.height) {
+            f.y = -10;
+            f.x = Math.random() * canvas.width;
+        }
+    }
+}
+
+setInterval(drawSnow, 33);
     })
     requestAnimationFrame(anim)
 })()
