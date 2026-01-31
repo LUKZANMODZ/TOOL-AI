@@ -147,7 +147,7 @@ function login(){
 
 function hashKey(str){
   let h = 0
-  for(let i=0;i<str.length;i++){
+  for(let i = 0; i < str.length; i++){
     h = (h << 5) - h + str.charCodeAt(i)
     h |= 0
   }
@@ -163,8 +163,10 @@ function checkKey(){
   }
   showToast("🚀 Key đúng – vào tool")
   setTimeout(()=>{
-    window.location.href = "https://toolfreebythomas.fun"
-  },1000)
+    function getToolURL(){
+  const part1 = atob("aHR0cHM6Ly90b29s")
+  const part2 = atob("ZnJlZWJ5dGhvbWFzLmZ1bg==")
+  return part1 + part2
   }
 
 /* ===== FX 120FPS ===== */
