@@ -145,28 +145,30 @@ function login(){
   setTimeout(()=>{loginBox.classList.add("hidden"); keyBox.classList.remove("hidden")},700)
 }
 
-function hashKey(random){
+function hashKey(str){
   let h = 0
   for(let i = 0; i < str.length; i++){
-    h = (h << 5) - h + str.randomkey(i)
+    h = (h << 5) - h + str.charCodeAt(i)
     h |= 0
   }
   return h
 }
 
-// HASH của key: DỊT MẸ XEM CÁI LỒN
 const KEY_HASH = 1958194156
+// ↑ hash của key MỚI: DỊT MẸ XEM CÁI LỒN
 
 function checkKey(){
-  if(hashKey(keyInput.value) !== KEY_HASH){
-    return showToast("❌ Key không hợp lệ")
+  const userKey = keyInput.value.trim()
+
+  if(hashKey(userKey) !== KEY_HASH){
+    showToast("❌ Key không đúng")
+    return
   }
-  showToast("🚀 Key đúng – vào tool")
+
+  showToast("✅ Key hợp lệ – truy cập")
   setTimeout(()=>{
-    function getToolURL(){
-  const part1 = atob("aHR0cHM6Ly90b29s")
-  const part2 = atob("ZnJlZWJ5dGhvbWFzLmZ1bg==")
-  return part1 + part2
+    window.location.href = decodeURL()
+  }, 800)
   }
 
 /* ===== FX 120FPS ===== */
