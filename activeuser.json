@@ -1,4 +1,11 @@
-[
+[   
+    {
+        "device_id": "1",
+        "username": "1",
+        "password": "1",
+        "expirydate": "31-12-20245",
+        "Allowoffline": true
+    },
     {
         "device_id": "device123",
         "username": "user1",
